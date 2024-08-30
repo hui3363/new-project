@@ -5,8 +5,17 @@ const app = express()
 
 const PORT = 5000
 
-app.use('/', (req, ress) => {
-  ress.send('Hello, express!')
+app.use('/', (req, res, next) => {
+  res.send('Hello, express!')
+
+  setTimeout(() => {
+    next()
+  }, 1000)
+})
+
+app.use((req, res) => {
+  console.log('middleware 2')
+  res.send('express 2')
 })
 
 app.listen(PORT, () => {
