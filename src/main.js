@@ -5,6 +5,8 @@ import bodyParser from 'body-parser'
 const app = express()
 app.use(bodyParser.json())
 
+app.set('view engine', 'pug')
+
 const userRoute = express.Router()
 
 const PORT = 5000
@@ -48,6 +50,10 @@ userRoute.post('/:id/nickname', (req, res) => {
 })
 
 app.use('/users', userRoute)
+
+app.get('/', (req, res) => {
+  res.render('index')
+})
 
 app.listen(PORT, () => {
   console.log(`express sever is listening at port: ${PORT}`)
