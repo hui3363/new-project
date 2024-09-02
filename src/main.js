@@ -5,6 +5,8 @@ import bodyParser from 'body-parser'
 const app = express()
 app.use(bodyParser.json())
 
+app.use(express.static('src/public'))
+app.set('views', 'src/views')
 app.set('view engine', 'pug')
 
 const userRoute = express.Router()
@@ -18,7 +20,10 @@ userRoute.get('/', (req, res) => {
 const USERS = {
   15: {
     nickname: 'foo',
-  }
+  },
+  16: {
+    nickname: 'bar',
+  },
 }
 
 userRoute.param('id', (req, res, next, value) => {
@@ -29,9 +34,17 @@ userRoute.param('id', (req, res, next, value) => {
 })
 
 userRoute.get('/:id', (req, res) => {
-  console.log('userRouter get ID')
-  // @ts-ignore
-  res.send(req.user)
+  const resMimeType = req.accepts(['json', 'html'])
+
+  if (resMimeType === 'json') {
+    // @ts-ignore
+    res.send(req.user)
+  } else if (resMimeType === 'html') {
+    res.render('user-profile', {
+      // @ts-ignore
+      nickname: req.user.nickname,
+    })
+  }
 })
 
 userRoute.post('/', (req, res) => {
@@ -39,7 +52,6 @@ userRoute.post('/', (req, res) => {
 })
 
 userRoute.post('/:id/nickname', (req, res) => {
-  
   // @ts-ignore
   const { user } = req
   const { nickname } = req.body
